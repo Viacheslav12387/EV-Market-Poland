@@ -274,11 +274,12 @@ st.markdown("---")
 # TABS
 # =========================
 
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊  Przegląd",
     "📈  Sprzedaż",
     "🔌  Infrastruktura",
-    "🔮  Prognozy 2030"
+    "🔮  Prognozy 2030",
+    "💼  Wnioski biznesowe"
 ])
 
 # ──────────────────────────────────────────────
@@ -506,6 +507,128 @@ with tab4:
         st.caption("Prognoza zakłada cel EU: max 10 EV/punkt ładowania")
 
     st.warning("⚠️ Prognozy oparte na założeniu stałej stopy wzrostu. Rzeczywiste wyniki zależą od polityki dopłat, cen energii i dostępności modeli EV.")
+
+# ──────────────────────────────────────────────
+# TAB 5: WNIOSKI BIZNESOWE
+# ──────────────────────────────────────────────
+
+with tab5:
+
+    section("💼", "Dla kogo są te dane i co z nich wynika?")
+
+    st.markdown("""
+    <div style="background:#16213e;border:1px solid #0f3460;border-radius:8px;padding:16px 20px;margin-bottom:16px;color:#c0d8f0;font-size:0.9rem;line-height:1.6;">
+    Dashboard oparty na danych IEA (2010–2023) oraz szacunkach PSNM/PZPM (2024–2026).
+    Poniższe wnioski są rekomendacjami analitycznymi — nie poradą inwestycyjną.
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Row 1
+    b1, b2 = st.columns(2)
+
+    with b1:
+        st.markdown("""
+        <div class="kpi-card" style="border-left-color:#00d4ff;min-height:auto;padding:20px 24px;">
+            <div class="kpi-label">🚗 Dealer / Importer EV</div>
+            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Kiedy wejść na rynek?</div>
+            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
+            CAGR 66%/rok oznacza że rynek podwaja się co ~18 miesięcy.
+            Polska jest wciąż w fazie wczesnej adopcji (6,6%) — to najlepszy moment
+            na budowanie pozycji przed nasyceniem rynku.<br><br>
+            <span style="color:#4ade80;">✓ Rekomendacja: ekspansja sieci serwisowej i ładowania już teraz</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with b2:
+        st.markdown("""
+        <div class="kpi-card" style="border-left-color:#7b61ff;min-height:auto;padding:20px 24px;">
+            <div class="kpi-label">🔌 Inwestor infrastruktury</div>
+            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Gdzie jest luka rynkowa?</div>
+            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
+            Przy celu EU 10 EV/punkt ładowania i obecnych 20,3 EV/punkt —
+            infrastruktura jest niedoinwestowana o ponad 50%.
+            Przy scenariuszu 1M EV potrzeba 87 569 nowych punktów.<br><br>
+            <span style="color:#4ade80;">✓ Rekomendacja: DC fast charging w korytarzach A1, A2, S7</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Row 2
+    b3, b4 = st.columns(2)
+
+    with b3:
+        st.markdown("""
+        <div class="kpi-card" style="border-left-color:#4ade80;min-height:auto;padding:20px 24px;">
+            <div class="kpi-label">🚚 Firma logistyczna / flotowa</div>
+            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Kiedy elektryfikować flotę?</div>
+            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
+            Stock EV rośnie +73% rocznie — ceny używanych EV spadają wraz z podażą.
+            TCO (Total Cost of Ownership) dla EV jest już korzystniejszy
+            przy przebiegu >30 000 km/rok.<br><br>
+            <span style="color:#4ade80;">✓ Rekomendacja: elektryfikacja floty miejskiej 2025–2027</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with b4:
+        st.markdown("""
+        <div class="kpi-card" style="border-left-color:#fb923c;min-height:auto;padding:20px 24px;">
+            <div class="kpi-label">🏛️ Samorząd / Polityka publiczna</div>
+            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Jakie działania są potrzebne?</div>
+            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
+            Luka 14,4pp do średniej europejskiej to argument za programem dopłat.
+            Kraje które wcześnie wdrożyły zachęty (Niemcy, Norwegia)
+            osiągnęły adoption rate 3–5x wyższy niż bez dopłat.<br><br>
+            <span style="color:#4ade80;">✓ Rekomendacja: program dopłat + strefy czystego transportu</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Market maturity analysis
+    section("📐", "Analiza dojrzałości rynku — gdzie jesteśmy?")
+
+        maturity_data = {
+        "Faza": ["Innowatorzy\n(0–2%)", "Wczesni\nadoptujący\n(2–7%)", "Wczesna\nwiększość\n(7–16%)", "Późna\nwiększość\n(16–34%)", "Maruderzy\n(34%+)"],
+        "Próg": [2, 7, 16, 34, 50],
+        "Kolor": ["#556677", "#00d4ff", "#4ade80", "#7b61ff", "#fb923c"]
+    }
+
+    fig_mat = go.Figure()
+    for i, (faza, prog, kolor) in enumerate(zip(maturity_data["Faza"], maturity_data["Próg"], maturity_data["Kolor"])):
+        fig_mat.add_trace(go.Bar(
+            name=faza, x=[faza], y=[prog],
+            marker_color=kolor,
+            opacity=0.6 if i != 1 else 1.0
+        ))
+
+    # Poland marker
+    fig_mat.add_hline(y=6.6, line_dash="dash", line_color="#ffffff",
+                      annotation_text="🇵🇱 Polska 6,6%",
+                      annotation_font_color="#ffffff")
+
+    fig_mat.update_layout(**_layout, showlegend=False, title_text="",
+                          yaxis_title="Udział rynkowy (%)")
+    st.plotly_chart(fig_mat, use_container_width=True)
+
+    st.info("📍 Polska jest na granicy fazy 'Wczesni adoptujący' → 'Wczesna większość'. To historycznie najszybszy okres wzrostu dla każdej technologii — moment tuż przed przełomem masowej adopcji.")
+
+    # Key numbers for business
+    section("🔢", "Kluczowe liczby dla decyzji biznesowych")
+
+    n1, n2, n3, n4 = st.columns(4)
+    with n1:
+        st.markdown(kpi("Break-even infrastruktury", "~3 lata", "Przy średnim obłożeniu DC", "#00d4ff"), unsafe_allow_html=True)
+    with n2:
+        st.markdown(kpi("Potencjał rynku 2030", "~120k szt./rok", "Scenariusz bazowy +25%", "#7b61ff"), unsafe_allow_html=True)
+    with n3:
+        st.markdown(kpi("Luka infrastrukturalna", "87 569 punktów", "Do celu EU przy 1M EV", "#4ade80"), unsafe_allow_html=True)
+    with n4:
+        st.markdown(kpi("Czas podwojenia rynku", "~18 miesięcy", "Przy CAGR 66%", "#fb923c"), unsafe_allow_html=True)
+
+# =========================
+# FOOTER
+# =========================
 
 # =========================
 # FOOTER
