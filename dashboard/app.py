@@ -15,21 +15,34 @@ st.set_page_config(
 )
 
 # =========================
-# CUSTOM CSS
+# CUSTOM CSS — Power BI Dark Theme
 # =========================
 
 st.markdown("""
 <style>
-    .stApp { background-color: #1a1a2e; color: #e0e0e0; }
-    .stApp > header { background-color: #1a1a2e; }
+    /* ── Base & Background ── */
+    .stApp {
+        background-color: #1a1a2e;
+        color: #e0e0e0;
+    }
+    .stApp > header {
+        background-color: #1a1a2e;
+    }
 
+    /* ── Sidebar ── */
     [data-testid="stSidebar"] {
         background-color: #16213e;
         border-right: 1px solid #0f3460;
     }
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] .stMarkdown p { color: #a0c4ff !important; }
+    [data-testid="stSidebar"] .stSelectbox label,
+    [data-testid="stSidebar"] .stMultiSelect label,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        color: #a0c4ff !important;
+    }
 
+    /* ── Title ── */
     h1 {
         color: #ffffff !important;
         font-size: 1.8rem !important;
@@ -42,80 +55,91 @@ st.markdown("""
         font-size: 1.05rem !important;
         text-transform: uppercase;
         letter-spacing: 1px;
+        margin-top: 0.5rem !important;
     }
 
+    /* ── KPI Cards ── */
     .kpi-card {
         background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
         border: 1px solid #0f3460;
         border-left: 4px solid #00d4ff;
         border-radius: 8px;
-        padding: 18px 20px;
+        padding: 20px 24px;
         margin-bottom: 8px;
-        min-height: 100px;
     }
     .kpi-label {
-        font-size: 0.68rem;
+        font-size: 0.72rem;
         color: #8899aa;
         text-transform: uppercase;
         letter-spacing: 1.2px;
         margin-bottom: 6px;
     }
     .kpi-value {
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: 700;
         color: #ffffff;
         line-height: 1.1;
     }
-    .kpi-delta { font-size: 0.75rem; color: #4ade80; margin-top: 4px; }
-    .kpi-delta-neg { font-size: 0.75rem; color: #fb923c; margin-top: 4px; }
+    .kpi-delta {
+        font-size: 0.78rem;
+        color: #4ade80;
+        margin-top: 4px;
+    }
 
+    /* ── Section Divider ── */
     .section-title {
         background-color: #0f3460;
         border-left: 4px solid #00d4ff;
         padding: 8px 16px;
         border-radius: 4px;
-        margin: 20px 0 14px 0;
+        margin: 24px 0 16px 0;
         color: #ffffff !important;
-        font-size: 0.82rem !important;
+        font-size: 0.85rem !important;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
 
+    /* ── Info Boxes ── */
     [data-testid="stAlert"] {
-        background-color: #16213e !important;
-        border: 1px solid #0f3460 !important;
+        background-color: #16213e;
+        border: 1px solid #0f3460;
         border-radius: 6px;
         color: #c0d8f0 !important;
     }
 
-    /* Tabs styling */
-    [data-testid="stTabs"] [role="tablist"] {
-        background-color: #16213e;
-        border-bottom: 2px solid #0f3460;
-        padding: 0 4px;
-        gap: 2px;
+    /* ── Metric widget override ── */
+    [data-testid="stMetricValue"] {
+        color: #ffffff !important;
+        font-size: 1.8rem !important;
     }
-    [data-testid="stTabs"] button[role="tab"] {
+    [data-testid="stMetricLabel"] {
         color: #8899aa !important;
-        font-size: 0.78rem !important;
-        font-weight: 600;
+        font-size: 0.75rem !important;
         text-transform: uppercase;
         letter-spacing: 0.8px;
-        padding: 10px 18px !important;
-        border-radius: 6px 6px 0 0;
-        border: none;
-        background: transparent;
     }
-    [data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
-        color: #00d4ff !important;
-        background-color: #0f3460 !important;
-        border-bottom: 2px solid #00d4ff;
+    [data-testid="stMetricDelta"] {
+        font-size: 0.8rem !important;
     }
 
-    hr { border-color: #0f3460 !important; margin: 1.2rem 0 !important; }
-    .stCaption { color: #556677 !important; font-size: 0.70rem !important; }
-    .gtitle { display: none !important; }
+    /* ── Plotly chart containers ── */
+    .js-plotly-plot {
+        border-radius: 8px;
+        border: 1px solid #0f3460;
+    }
+
+    /* ── Horizontal rule ── */
+    hr {
+        border-color: #0f3460 !important;
+        margin: 1.5rem 0 !important;
+    }
+
+    /* ── Footer caption ── */
+    .stCaption {
+        color: #556677 !important;
+        font-size: 0.72rem !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -123,77 +147,52 @@ st.markdown("""
 # PLOTLY THEME
 # =========================
 
-_layout = dict(
-    paper_bgcolor="#16213e",
-    plot_bgcolor="#1a1a2e",
-    font=dict(color="#c0d8f0", size=12),
-    xaxis=dict(gridcolor="#1e3a5f", linecolor="#0f3460", tickfont=dict(color="#8899aa")),
-    yaxis=dict(gridcolor="#1e3a5f", linecolor="#0f3460", tickfont=dict(color="#8899aa")),
-    legend=dict(bgcolor="#16213e", bordercolor="#0f3460", borderwidth=1, font=dict(color="#c0d8f0")),
-    margin=dict(t=20, l=10, r=10, b=10),
-    colorway=["#00d4ff", "#7b61ff", "#4ade80", "#fb923c", "#f472b6"]
+PLOTLY_TEMPLATE = dict(
+    layout=dict(
+        paper_bgcolor="#16213e",
+        plot_bgcolor="#1a1a2e",
+        font=dict(color="#c0d8f0", size=12),
+        title=dict(font=dict(color="#ffffff", size=14), x=0.02),
+        xaxis=dict(
+            gridcolor="#1e3a5f",
+            linecolor="#0f3460",
+            tickfont=dict(color="#8899aa")
+        ),
+        yaxis=dict(
+            gridcolor="#1e3a5f",
+            linecolor="#0f3460",
+            tickfont=dict(color="#8899aa")
+        ),
+        legend=dict(
+            bgcolor="#16213e",
+            bordercolor="#0f3460",
+            borderwidth=1,
+            font=dict(color="#c0d8f0")
+        ),
+        margin=dict(t=50, l=10, r=10, b=10),
+        colorway=["#00d4ff", "#7b61ff", "#4ade80", "#fb923c", "#f472b6"]
+    )
 )
 
-def theme(fig):
-    fig.update_layout(**_layout)
-    fig.update_layout(title_text="")
+def apply_theme(fig):
+    fig.update_layout(**PLOTLY_TEMPLATE["layout"])
     return fig
 
-def kpi(label, value, delta="", color="#00d4ff", delta_neg=False):
-    delta_class = "kpi-delta-neg" if delta_neg else "kpi-delta"
-    font_size = "1.3rem" if len(str(value)) > 8 else "1.8rem"
-    return f"""
-    <div class="kpi-card" style="border-left-color:{color};">
-        <div class="kpi-label">{label}</div>
-        <div class="kpi-value" style="font-size:{font_size};white-space:nowrap;">{value}</div>
-        <div class="{delta_class}">{delta}</div>
-    </div>"""
-
-def section(icon, title):
-    st.markdown(f'<div class="section-title">{icon} {title}</div>', unsafe_allow_html=True)
-
 # =========================
-# DATA LOADING
+# LOAD DATA
 # =========================
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("data/electric_car_sales.csv")
-
-@st.cache_data
-def calc_cagr(df, region, powertrain, y_start, y_end):
-    d = df[(df["region"] == region) & (df["parameter"] == "EV sales") & (df["powertrain"] == powertrain)].sort_values("year")
-    try:
-        s = d[d["year"] == y_start]["value"].iloc[0]
-        e = d[d["year"] == y_end]["value"].iloc[0]
-        return ((e / s) ** (1 / (y_end - y_start)) - 1) * 100
-    except:
-        return 0.0
-
-@st.cache_data
-def forecast_sales(start_sales, start_year, end_year, scenarios):
-    results = []
-    for name, rate in scenarios.items():
-        sales = start_sales
-        for year in range(start_year + 1, end_year + 1):
-            sales *= (1 + rate)
-            results.append({"Scenariusz": name, "Rok": year, "Sprzedaż": round(sales)})
-    return pd.DataFrame(results)
-
-@st.cache_data
-def forecast_infra(ev_counts, ratio):
-    return pd.DataFrame({
-        "Scenariusz": [f"{int(n/1000)}k EV" for n in ev_counts],
-        "Punkty ładowania": [round(n / ratio) for n in ev_counts]
-    })
+    df = pd.read_csv("data/electric_car_sales.csv")
+    return df
 
 df = load_data()
 
-# Static recent data (2024-2026 estimates based on PSNM)
+# Recent data (2023-2026) — define manually since not in CSV
 recent_df = pd.DataFrame({
-    "Rok": ["2023", "2024", "2025"],
-    "BEV": [17_000, 29_400, 43_100],
-    "PHEV": [13_000, 18_500, 24_200]
+    "year": [2023, 2024, 2025],
+    "bev_sales": [17_200, 29_400, 43_100]
 })
 
 # =========================
@@ -203,441 +202,278 @@ recent_df = pd.DataFrame({
 with st.sidebar:
     st.markdown("## ⚡ EV Poland")
     st.markdown("---")
-    st.markdown("### Filtry globalne")
+    st.markdown("### Filtry")
 
     country = st.selectbox(
-        "Kraj / region",
+        "Kraj",
         sorted(df["region"].unique()),
         index=sorted(df["region"].unique()).index("Poland")
     )
 
     powertrain_filter = st.multiselect(
         "Typ napędu",
-        options=["BEV", "PHEV"],
-        default=["BEV", "PHEV"],
-        format_func=lambda x: x
-    )
-
-    year_range = st.slider(
-        "Zakres lat",
-        min_value=int(df["year"].min()),
-        max_value=int(df["year"].max()),
-        value=(2015, 2023)
+        ["BEV", "PHEV"],
+        default=["BEV", "PHEV"]
     )
 
     st.markdown("---")
-    st.caption("Źródła: IEA · PSNM · PZPM\nAktualizacja: 2026")
+    st.caption("Dane: IEA · PSNM · PZPM\nAktualizacja: 2026")
 
 # =========================
-# KPI CALCULATIONS (from real data)
+# KPI CALCULATIONS
 # =========================
 
-latest_share_val = df[
-    (df["region"] == country) & (df["parameter"] == "EV sales share") & (df["powertrain"] == "EV")
+latest_sales = df[
+    (df["region"] == country)
+    & (df["parameter"] == "EV sales")
+    & (df["year"] == 2023)
+]["value"].sum()
+
+latest_share = df[
+    (df["region"] == country)
+    & (df["parameter"] == "EV sales share")
+    & (df["powertrain"] == "EV")
 ]["value"].max()
-
-eu_share_2023 = df[
-    (df["region"] == "Europe") & (df["parameter"] == "EV sales share") & (df["powertrain"] == "EV") & (df["year"] == 2023)
-]["value"].values[0] if "Europe" in df["region"].values else 21.0
-
-bev_sales_2023 = df[
-    (df["region"] == country) & (df["parameter"] == "EV sales") & (df["powertrain"] == "BEV") & (df["year"] == 2023)
-]["value"].sum()
-
-phev_sales_2023 = df[
-    (df["region"] == country) & (df["parameter"] == "EV sales") & (df["powertrain"] == "PHEV") & (df["year"] == 2023)
-]["value"].sum()
-
-total_sales_2023 = bev_sales_2023 + phev_sales_2023
-
-ev_stock_2023 = df[
-    (df["region"] == country) & (df["parameter"] == "EV stock") & (df["powertrain"].isin(["BEV", "PHEV"])) & (df["year"] == 2023)
-]["value"].sum()
-
-cagr_bev = calc_cagr(df, country, "BEV", 2020, 2023)
-
-gap_to_eu = eu_share_2023 - latest_share_val
 
 # =========================
 # HEADER
 # =========================
 
 st.markdown(
-    f"<h1>⚡ EV Market Poland"
-    f"<span style='font-size:0.85rem;color:#8899aa;font-weight:400;margin-left:16px;'>"
+    f"<h1>⚡ EV Market Poland &nbsp;&nbsp;"
+    f"<span style='font-size:0.9rem;color:#8899aa;font-weight:400'>"
     f"Dashboard · Market Snapshot 2026</span></h1>",
     unsafe_allow_html=True
 )
 st.markdown("---")
 
 # =========================
-# TABS
+# KPI CARDS — HTML custom style
 # =========================
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📊  Przegląd",
-    "📈  Sprzedaż",
-    "🔌  Infrastruktura",
-    "🔮  Prognozy 2030",
-    "💼  Wnioski biznesowe"
-])
+c1, c2, c3, c4 = st.columns(4)
 
-# ──────────────────────────────────────────────
-# TAB 1: PRZEGLĄD
-# ──────────────────────────────────────────────
-
-with tab1:
-
-    # KPI row
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(kpi("Udział EV w rynku (2023)", f"{latest_share_val:.1f}%",
-                        f"▼ {gap_to_eu:.1f}pp za Europą ({eu_share_2023:.0f}%)",
-                        "#00d4ff", delta_neg=True), unsafe_allow_html=True)
-    with c2:
-        st.markdown(kpi("Łączna sprzedaż EV (2023)", f"{int(total_sales_2023):,}",
-                        f"BEV: {int(bev_sales_2023):,}  ·  PHEV: {int(phev_sales_2023):,}",
-                        "#7b61ff"), unsafe_allow_html=True)
-    with c3:
-        st.markdown(kpi("Łączny stock EV (2023)", f"{int(ev_stock_2023):,}",
-                        "▲ +73% vs 2022", "#4ade80"), unsafe_allow_html=True)
-    with c4:
-        st.markdown(kpi("CAGR BEV 2020–2023", f"{cagr_bev:.1f}%",
-                        "Roczny wzrost sprzedaży BEV", "#fb923c"), unsafe_allow_html=True)
-
-    # Polska vs Europa — overview chart
-    section("🌍", f"{country} vs Europa — udział EV w rynku (2010–2023)")
-
-    comparison = df[
-        (df["region"].isin([country, "Europe"])) &
-        (df["parameter"] == "EV sales share") &
-        (df["powertrain"] == "EV")
-    ]
-
-    fig_cmp = px.line(comparison, x="year", y="value", color="region", markers=True, title=" ",
-                      labels={"value": "Udział rynkowy (%)", "year": "Rok", "region": "Region"})
-    fig_cmp = theme(fig_cmp)
-    fig_cmp.update_traces(line=dict(width=2.5), marker=dict(size=6))
-    st.plotly_chart(fig_cmp, use_container_width=True)
-
-    # Insights row
-    section("💡", "Key Insights")
-    i1, i2, i3 = st.columns(3)
-    with i1:
-        st.success(f"**CAGR BEV {cagr_bev:.0f}%/rok**\n\nSprzedaż BEV w Polsce rosła średnio {cagr_bev:.1f}% rocznie w latach 2020–2023.")
-    with i2:
-        st.info(f"**Luka do Europy: {gap_to_eu:.1f}pp**\n\nPolska ({latest_share_val:.1f}%) vs Europa ({eu_share_2023:.0f}%) — duży potencjał wzrostu.")
-    with i3:
-        st.warning("**Stock rośnie szybciej niż share**\n\nPrzy ~99k EV na drogach (2023), udział wciąż poniżej 7% — oznacza to młody rynek z wysoką bazą wzrostu.")
-
-# ──────────────────────────────────────────────
-# TAB 2: SPRZEDAŻ
-# ──────────────────────────────────────────────
-
-with tab2:
-
-    section("📈", f"Historia sprzedaży — {country} ({year_range[0]}–{year_range[1]})")
-
-    sales_data = df[
-        (df["region"] == country) &
-        (df["parameter"] == "EV sales") &
-        (df["powertrain"].isin(powertrain_filter)) &
-        (df["year"].between(*year_range))
-    ]
-
-    fig_hist = px.line(sales_data, x="year", y="value", color="powertrain", markers=True, title=" ",
-                       labels={"value": "Liczba pojazdów", "year": "Rok", "powertrain": "Napęd"})
-    fig_hist = theme(fig_hist)
-    fig_hist.update_traces(line=dict(width=2.5), marker=dict(size=7))
-    st.plotly_chart(fig_hist, use_container_width=True)
-
-    section("📊", "Sprzedaż BEV + PHEV (2023–2025) — szacunki PSNM")
-
-    col_a, col_b = st.columns([2, 1])
-
-    with col_a:
-        fig_recent = go.Figure()
-        fig_recent.add_trace(go.Bar(
-            name="BEV", x=recent_df["Rok"], y=recent_df["BEV"],
-            marker_color="#00d4ff",
-            text=[f"{v:,}" for v in recent_df["BEV"]],
-            textposition="outside", textfont=dict(color="#ffffff")
-        ))
-        fig_recent.add_trace(go.Bar(
-            name="PHEV", x=recent_df["Rok"], y=recent_df["PHEV"],
-            marker_color="#7b61ff",
-            text=[f"{v:,}" for v in recent_df["PHEV"]],
-            textposition="outside", textfont=dict(color="#ffffff")
-        ))
-        fig_recent.update_layout(**_layout, barmode="group", showlegend=True, title_text="")
-        st.plotly_chart(fig_recent, use_container_width=True)
-
-    with col_b:
-        st.markdown(kpi("BEV 2025 (est.)", "43 100", "▲ +47% vs 2024", "#4ade80"), unsafe_allow_html=True)
-        st.markdown(kpi("PHEV 2025 (est.)", "24 200", "▲ +31% vs 2024", "#7b61ff"), unsafe_allow_html=True)
-        st.markdown(kpi("Łącznie 2025", "67 300", "▲ +41% YoY", "#fb923c"), unsafe_allow_html=True)
-        st.caption("Dane szacunkowe PSNM/PZPM — nie zawarte w zbiorze IEA")
-
-    section("📉", "EV Stock — skumulowana flota EV w Polsce")
-
-    stock_data = df[
-        (df["region"] == country) &
-        (df["parameter"] == "EV stock") &
-        (df["powertrain"].isin(["BEV", "PHEV"]))
-    ]
-
-    fig_stock = px.area(stock_data, x="year", y="value", color="powertrain", title=" ",
-                        labels={"value": "Liczba pojazdów (stock)", "year": "Rok", "powertrain": "Napęd"})
-    fig_stock = theme(fig_stock)
-    fig_stock.update_traces(line=dict(width=2))
-    st.plotly_chart(fig_stock, use_container_width=True)
-
-# ──────────────────────────────────────────────
-# TAB 3: INFRASTRUKTURA
-# ──────────────────────────────────────────────
-
-with tab3:
-
-    section("🔌", "Stan infrastruktury ładowania — Polska 2026")
-
-    ci1, ci2, ci3 = st.columns(3)
-    with ci1:
-        st.markdown(kpi("Punkty ładowania", "12 431", "▲ +2 104 vs 2025", "#4ade80"), unsafe_allow_html=True)
-    with ci2:
-        st.markdown(kpi("EV / punkt ładowania", "20.3", "Cel EU: max 10 EV/punkt", "#fb923c", delta_neg=True), unsafe_allow_html=True)
-    with ci3:
-        st.markdown(kpi("Stacje szybkie DC", "5 890", "47% całości infrastruktury", "#7b61ff"), unsafe_allow_html=True)
-
-    section("⚡", "AC vs DC — podział punktów ładowania")
-
-    charging = pd.DataFrame({
-        "Typ": ["AC — wolne ładowanie", "DC — szybkie ładowanie"],
-        "Liczba": [6_541, 5_890],
-        "Kolor": ["#00d4ff", "#7b61ff"]
-    })
-
-    col_c1, col_c2 = st.columns([1, 1])
-
-    with col_c1:
-        fig_ch = go.Figure(go.Bar(
-            x=charging["Typ"], y=charging["Liczba"],
-            marker_color=charging["Kolor"],
-            text=[f"{v:,}" for v in charging["Liczba"]],
-            textposition="outside", textfont=dict(color="#ffffff")
-        ))
-        fig_ch.update_layout(**_layout, showlegend=False, title_text="")
-        st.plotly_chart(fig_ch, use_container_width=True)
-
-    with col_c2:
-        fig_pie = go.Figure(go.Pie(
-            labels=charging["Typ"],
-            values=charging["Liczba"],
-            marker=dict(colors=["#00d4ff", "#7b61ff"]),
-            hole=0.5,
-            textfont=dict(color="#ffffff", size=12)
-        ))
-        fig_pie.update_layout(**_layout, showlegend=True, title_text="")
-        st.plotly_chart(fig_pie, use_container_width=True)
-
-    st.info("🔍 Polska ma jeden z wyższych wskaźników EV/punkt w UE. Norma europejska to max 10 EV na 1 punkt ładowania — przy obecnym tempie wzrostu EV, infrastruktura wymaga podwojenia do 2027.")
-
-# ──────────────────────────────────────────────
-# TAB 4: PROGNOZY 2030
-# ──────────────────────────────────────────────
-
-with tab4:
-
-    section("🔮", "Prognoza sprzedaży BEV 2024–2030 — 3 scenariusze")
-
-    scenarios = {
-        "Konserwatywny (+15%/rok)": 0.15,
-        "Bazowy (+25%/rok)": 0.25,
-        "Optymistyczny (+35%/rok)": 0.35
-    }
-
-    forecast_df = forecast_sales(17_000, 2023, 2030, scenarios)
-
-    fig_fc = px.line(forecast_df, x="Rok", y="Sprzedaż", color="Scenariusz", markers=True, title=" ",
-                     labels={"Sprzedaż": "Sprzedaż BEV (szt.)", "Rok": "Rok"})
-    fig_fc = theme(fig_fc)
-    fig_fc.update_traces(line=dict(width=2.5), marker=dict(size=6))
-
-    # Add 2023 reference point
-    fig_fc.add_scatter(x=[2023], y=[17_000], mode="markers",
-                       marker=dict(color="#ffffff", size=10, symbol="diamond"),
-                       name="Dane rzeczywiste 2023", showlegend=True)
-    st.plotly_chart(fig_fc, use_container_width=True)
-
-    # 2030 end values
-    p1, p2, p3 = st.columns(3)
-    end_vals = forecast_df[forecast_df["Rok"] == 2030].set_index("Scenariusz")["Sprzedaż"]
-    with p1:
-        v = end_vals.get("Konserwatywny (+15%/rok)", 0)
-        st.markdown(kpi("Konserwatywny — 2030", f"{int(v):,}", "+15%/rok od 2023", "#8899aa"), unsafe_allow_html=True)
-    with p2:
-        v = end_vals.get("Bazowy (+25%/rok)", 0)
-        st.markdown(kpi("Bazowy — 2030", f"{int(v):,}", "+25%/rok od 2023", "#00d4ff"), unsafe_allow_html=True)
-    with p3:
-        v = end_vals.get("Optymistyczny (+35%/rok)", 0)
-        st.markdown(kpi("Optymistyczny — 2030", f"{int(v):,}", "+35%/rok od 2023", "#4ade80"), unsafe_allow_html=True)
-
-    section("🔌", "Wymagana infrastruktura ładowania — 2030")
-
-    infra_df = forecast_infra([500_000, 750_000, 1_000_000], 10.0)  # EU target: 10 EV/charger
-
-    fig_infra = go.Figure(go.Bar(
-        x=infra_df["Scenariusz"],
-        y=infra_df["Punkty ładowania"],
-        marker=dict(
-            color=infra_df["Punkty ładowania"],
-            colorscale=[[0, "#0f3460"], [0.5, "#00d4ff"], [1, "#4ade80"]],
-            showscale=False
-        ),
-        text=[f"{v:,}" for v in infra_df["Punkty ładowania"]],
-        textposition="outside", textfont=dict(color="#ffffff")
-    ))
-    fig_infra.update_layout(**_layout, showlegend=False, title_text="")
-
-    col_i1, col_i2 = st.columns([2, 1])
-    with col_i1:
-        st.plotly_chart(fig_infra, use_container_width=True)
-    with col_i2:
-        st.markdown(kpi("Obecna infrastruktura", "12 431", "Stan: 2026", "#fb923c"), unsafe_allow_html=True)
-        st.markdown(kpi("Luka przy 1M EV", "87 569", "Punktów do zbudowania", "#f472b6", delta_neg=True), unsafe_allow_html=True)
-        st.caption("Prognoza zakłada cel EU: max 10 EV/punkt ładowania")
-
-    st.warning("⚠️ Prognozy oparte na założeniu stałej stopy wzrostu. Rzeczywiste wyniki zależą od polityki dopłat, cen energii i dostępności modeli EV.")
-
-# ──────────────────────────────────────────────
-# TAB 5: WNIOSKI BIZNESOWE
-# ──────────────────────────────────────────────
-
-with tab5:
-
-    section("💼", "Dla kogo są te dane i co z nich wynika?")
-
-    st.markdown("""
-    <div style="background:#16213e;border:1px solid #0f3460;border-radius:8px;padding:16px 20px;margin-bottom:16px;color:#c0d8f0;font-size:0.9rem;line-height:1.6;">
-    Dashboard oparty na danych IEA (2010–2023) oraz szacunkach PSNM/PZPM (2024–2026).
-    Poniższe wnioski są rekomendacjami analitycznymi — nie poradą inwestycyjną.
+with c1:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-label">EV Market Share (2023)</div>
+        <div class="kpi-value">{latest_share:.1f}%</div>
+        <div class="kpi-delta">▲ vs. 2022</div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Row 1
-    b1, b2 = st.columns(2)
+with c2:
+    st.markdown(f"""
+    <div class="kpi-card" style="border-left-color:#7b61ff;">
+        <div class="kpi-label">Passenger EVs (2026)</div>
+        <div class="kpi-value">252 338</div>
+        <div class="kpi-delta">▲ +18% YoY</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with b1:
-        st.markdown("""
-        <div class="kpi-card" style="border-left-color:#00d4ff;min-height:auto;padding:20px 24px;">
-            <div class="kpi-label">🚗 Dealer / Importer EV</div>
-            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Kiedy wejść na rynek?</div>
-            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
-            CAGR 66%/rok oznacza że rynek podwaja się co ~18 miesięcy.
-            Polska jest wciąż w fazie wczesnej adopcji (6,6%) — to najlepszy moment
-            na budowanie pozycji przed nasyceniem rynku.<br><br>
-            <span style="color:#4ade80;">✓ Rekomendacja: ekspansja sieci serwisowej i ładowania już teraz</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+with c3:
+    st.markdown(f"""
+    <div class="kpi-card" style="border-left-color:#4ade80;">
+        <div class="kpi-label">Charging Points (2026)</div>
+        <div class="kpi-value">12 431</div>
+        <div class="kpi-delta">▲ +2 104 vs. 2025</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with b2:
-        st.markdown("""
-        <div class="kpi-card" style="border-left-color:#7b61ff;min-height:auto;padding:20px 24px;">
-            <div class="kpi-label">🔌 Inwestor infrastruktury</div>
-            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Gdzie jest luka rynkowa?</div>
-            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
-            Przy celu EU 10 EV/punkt ładowania i obecnych 20,3 EV/punkt —
-            infrastruktura jest niedoinwestowana o ponad 50%.
-            Przy scenariuszu 1M EV potrzeba 87 569 nowych punktów.<br><br>
-            <span style="color:#4ade80;">✓ Rekomendacja: DC fast charging w korytarzach A1, A2, S7</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Row 2
-    b3, b4 = st.columns(2)
-
-    with b3:
-        st.markdown("""
-        <div class="kpi-card" style="border-left-color:#4ade80;min-height:auto;padding:20px 24px;">
-            <div class="kpi-label">🚚 Firma logistyczna / flotowa</div>
-            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Kiedy elektryfikować flotę?</div>
-            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
-            Stock EV rośnie +73% rocznie — ceny używanych EV spadają wraz z podażą.
-            TCO (Total Cost of Ownership) dla EV jest już korzystniejszy
-            przy przebiegu >30 000 km/rok.<br><br>
-            <span style="color:#4ade80;">✓ Rekomendacja: elektryfikacja floty miejskiej 2025–2027</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with b4:
-        st.markdown("""
-        <div class="kpi-card" style="border-left-color:#fb923c;min-height:auto;padding:20px 24px;">
-            <div class="kpi-label">🏛️ Samorząd / Polityka publiczna</div>
-            <div style="color:#ffffff;font-size:1rem;font-weight:600;margin:8px 0;">Jakie działania są potrzebne?</div>
-            <div style="color:#c0d8f0;font-size:0.85rem;line-height:1.6;">
-            Luka 14,4pp do średniej europejskiej to argument za programem dopłat.
-            Kraje które wcześnie wdrożyły zachęty (Niemcy, Norwegia)
-            osiągnęły adoption rate 3–5x wyższy niż bez dopłat.<br><br>
-            <span style="color:#4ade80;">✓ Rekomendacja: program dopłat + strefy czystego transportu</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Market maturity analysis
-    section("📐", "Analiza dojrzałości rynku — gdzie jesteśmy?")
-
-        maturity_data = {
-        "Faza": ["Innowatorzy\n(0–2%)", "Wczesni\nadoptujący\n(2–7%)", "Wczesna\nwiększość\n(7–16%)", "Późna\nwiększość\n(16–34%)", "Maruderzy\n(34%+)"],
-        "Próg": [2, 7, 16, 34, 50],
-        "Kolor": ["#556677", "#00d4ff", "#4ade80", "#7b61ff", "#fb923c"]
-    }
-
-    fig_mat = go.Figure()
-    for i, (faza, prog, kolor) in enumerate(zip(maturity_data["Faza"], maturity_data["Próg"], maturity_data["Kolor"])):
-        fig_mat.add_trace(go.Bar(
-            name=faza, x=[faza], y=[prog],
-            marker_color=kolor,
-            opacity=0.6 if i != 1 else 1.0
-        ))
-
-    # Poland marker
-    fig_mat.add_hline(y=6.6, line_dash="dash", line_color="#ffffff",
-                      annotation_text="🇵🇱 Polska 6,6%",
-                      annotation_font_color="#ffffff")
-
-    fig_mat.update_layout(**_layout, showlegend=False, title_text="",
-                          yaxis_title="Udział rynkowy (%)")
-    st.plotly_chart(fig_mat, use_container_width=True)
-
-    st.info("📍 Polska jest na granicy fazy 'Wczesni adoptujący' → 'Wczesna większość'. To historycznie najszybszy okres wzrostu dla każdej technologii — moment tuż przed przełomem masowej adopcji.")
-
-    # Key numbers for business
-    section("🔢", "Kluczowe liczby dla decyzji biznesowych")
-
-    n1, n2, n3, n4 = st.columns(4)
-    with n1:
-        st.markdown(kpi("Break-even infrastruktury", "~3 lata", "Przy średnim obłożeniu DC", "#00d4ff"), unsafe_allow_html=True)
-    with n2:
-        st.markdown(kpi("Potencjał rynku 2030", "~120k szt./rok", "Scenariusz bazowy +25%", "#7b61ff"), unsafe_allow_html=True)
-    with n3:
-        st.markdown(kpi("Luka infrastrukturalna", "87 569 punktów", "Do celu EU przy 1M EV", "#4ade80"), unsafe_allow_html=True)
-    with n4:
-        st.markdown(kpi("Czas podwojenia rynku", "~18 miesięcy", "Przy CAGR 66%", "#fb923c"), unsafe_allow_html=True)
+with c4:
+    st.markdown(f"""
+    <div class="kpi-card" style="border-left-color:#fb923c;">
+        <div class="kpi-label">EV Sales (2023)</div>
+        <div class="kpi-value">{int(latest_sales):,}</div>
+        <div class="kpi-delta">BEV + PHEV</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =========================
-# FOOTER
+# HISTORICAL SALES
 # =========================
 
+st.markdown(
+    f'<div class="section-title">📈 Historical EV Sales — {country} (2010–2023)</div>',
+    unsafe_allow_html=True
+)
+
+sales_data = df[
+    (df["region"] == country)
+    & (df["parameter"] == "EV sales")
+    & (df["powertrain"].isin(powertrain_filter))
+]
+
+fig = px.line(
+    sales_data,
+    x="year",
+    y="value",
+    color="powertrain",
+    markers=True,
+    labels={"value": "Liczba pojazdów", "year": "Rok", "powertrain": "Napęd"}
+)
+fig = apply_theme(fig)
+fig.update_traces(line=dict(width=2.5), marker=dict(size=6))
+st.plotly_chart(fig, use_container_width=True)
+
+with st.expander("💬 Komentarz rynkowy"):
+    st.info(
+        f"Rynek EV w **{country}** znacznie przyspieszył po 2020 roku. "
+        f"Wykres pokazuje dynamikę sprzedaży BEV vs PHEV, "
+        f"co pozwala ocenić czy konsumenci preferują pojazdy w pełni elektryczne "
+        f"czy hybrydy plug-in."
+    )
+
 # =========================
-# FOOTER
+# COUNTRY VS EUROPE
+# =========================
+
+st.markdown(
+    f'<div class="section-title">🌍 {country} vs Europa — udział EV w rynku</div>',
+    unsafe_allow_html=True
+)
+
+comparison = df[
+    (df["region"].isin([country, "Europe"]))
+    & (df["parameter"] == "EV sales share")
+    & (df["powertrain"] == "EV")
+]
+
+fig2 = px.line(
+    comparison,
+    x="year",
+    y="value",
+    color="region",
+    markers=True,
+    labels={"value": "Udział (%)", "year": "Rok", "region": "Region"}
+)
+fig2 = apply_theme(fig2)
+fig2.update_traces(line=dict(width=2.5), marker=dict(size=6))
+st.plotly_chart(fig2, use_container_width=True)
+
+# =========================
+# RECENT MARKET PERFORMANCE
+# =========================
+
+st.markdown(
+    '<div class="section-title">📊 Recent Performance — rejestracje BEV (2023–2025)</div>',
+    unsafe_allow_html=True
+)
+
+fig_recent = go.Figure(go.Bar(
+    x=recent_df["year"].astype(str),
+    y=recent_df["bev_sales"],
+    marker_color=["#00d4ff", "#7b61ff", "#4ade80"],
+    text=recent_df["bev_sales"].apply(lambda x: f"{x:,}"),
+    textposition="outside",
+    textfont=dict(color="#ffffff")
+))
+fig_recent.update_layout(
+    **PLOTLY_TEMPLATE["layout"],
+    showlegend=False,
+    yaxis_title="Rejestracje BEV",
+    xaxis_title="Rok"
+)
+st.plotly_chart(fig_recent, use_container_width=True)
+
+st.info(
+    "Rejestracje BEV wzrosły z ~17 000 w 2023 r. do ponad 43 000 w 2025 r. "
+    "Dane za 2026 r. sugerują dalszy wzrost rynku."
+)
+
+# =========================
+# INFRASTRUCTURE 2026
+# =========================
+
+st.markdown(
+    '<div class="section-title">🔌 Infrastruktura ładowania — stan 2026</div>',
+    unsafe_allow_html=True
+)
+
+col1, col2 = st.columns([1, 2])
+
+with col1:
+    st.markdown("""
+    <div class="kpi-card" style="border-left-color:#4ade80; margin-top:12px;">
+        <div class="kpi-label">Punkty ładowania</div>
+        <div class="kpi-value">12 431</div>
+    </div>
+    <div class="kpi-card" style="border-left-color:#fb923c; margin-top:8px;">
+        <div class="kpi-label">EV / punkt ładowania</div>
+        <div class="kpi-value">20.3</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    charging = pd.DataFrame({
+        "Typ": ["AC (wolne)", "DC (szybkie)"],
+        "Liczba": [6541, 5890]
+    })
+    fig3 = go.Figure(go.Bar(
+        x=charging["Typ"],
+        y=charging["Liczba"],
+        marker_color=["#00d4ff", "#7b61ff"],
+        text=charging["Liczba"].apply(lambda x: f"{x:,}"),
+        textposition="outside",
+        textfont=dict(color="#ffffff")
+    ))
+    fig3.update_layout(**PLOTLY_TEMPLATE["layout"], showlegend=False)
+    st.plotly_chart(fig3, use_container_width=True)
+
+# =========================
+# INFRASTRUCTURE 2030
+# =========================
+
+st.markdown(
+    '<div class="section-title">🔮 Prognoza infrastruktury — 2030</div>',
+    unsafe_allow_html=True
+)
+
+forecast_chargers = pd.DataFrame({
+    "Scenariusz": ["500k EV", "750k EV", "1M EV"],
+    "Potrzebne punkty": [24_631, 36_946, 49_261]
+})
+
+fig4 = go.Figure(go.Bar(
+    x=forecast_chargers["Scenariusz"],
+    y=forecast_chargers["Potrzebne punkty"],
+    marker=dict(
+        color=forecast_chargers["Potrzebne punkty"],
+        colorscale=[[0, "#0f3460"], [0.5, "#00d4ff"], [1, "#4ade80"]],
+        showscale=False
+    ),
+    text=forecast_chargers["Potrzebne punkty"].apply(lambda x: f"{x:,}"),
+    textposition="outside",
+    textfont=dict(color="#ffffff")
+))
+fig4.update_layout(**PLOTLY_TEMPLATE["layout"], showlegend=False)
+st.plotly_chart(fig4, use_container_width=True)
+
+# =========================
+# KEY INSIGHTS
+# =========================
+
+st.markdown(
+    '<div class="section-title">💡 Key Insights</div>',
+    unsafe_allow_html=True
+)
+
+ins1, ins2, ins3 = st.columns(3)
+with ins1:
+    st.success(f"**Wzrost po 2020**\n\nRynek EV w {country} znacznie przyspieszył — sprzedaż BEV rosła średnio >40% rocznie.")
+with ins2:
+    st.info(f"**Udział rynkowy**\n\nUdział EV wyniósł **{latest_share:.1f}%** w ostatnim dostępnym roku — poniżej średniej europejskiej.")
+with ins3:
+    st.warning("**Infrastruktura**\n\nRozbudowa sieci ładowania będzie kluczowa — przy 1M EV potrzeba ~49 tys. punktów.")
+
+# =========================
+# FOOTER / SOURCES
 # =========================
 
 st.markdown("---")
 st.caption(
-    "Źródła: International Energy Agency (IEA) — Global EV Data Explorer · "
+    "Źródła: International Energy Agency (IEA) · "
     "Polish New Mobility Association (PSNM) · "
     "Polish Automotive Industry Association (PZPM) · "
-    "Dashboard v3.0 — 2026"
+    "Dashboard v2.0 — 2026"
 )
